@@ -1,0 +1,41 @@
+.user_list_container {
+  background-color: rgb(246, 181, 62);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 30px;
+  .title {
+    display: flex;
+    justify-content: space-between; /* Espace les enfants (h2 et Link) de manière égale */
+    align-items: center; /* Centre verticalement les enfants */
+    width: 100%; /* Assure que .title prend toute la largeur disponible */
+    max-width: 1200px; /* Limite la largeur de l'élément si nécessaire */
+    padding: 0 20px; /* Ajoute un padding horizontal pour respirer */
+    margin-bottom: 20px; /* Espace sous la section titre */
+    h2 {
+      margin: 0;
+    }
+  }
+  .usersList {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: solid rgb(206, 181, 135) 2px;
+    width: 100%;
+
+    .userData {
+      display: flex;
+      align-items: center;
+
+      width: 60vw;
+    }
+    .actionKeys {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

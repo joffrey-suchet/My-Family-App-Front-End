@@ -1,0 +1,25 @@
+.formContainerSignup {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  background-color: rgb(250, 132, 132);
+  height: 100vh;
+  width: 100vw;
+  .avatar {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.formContainerUserUpdate {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+  background-color: rgb(92, 177, 226);
+  height: 100vh;
+  width: 100vw;
+  .avatar {
+    display: flex;
+    justify-content: center;
+  }
+}

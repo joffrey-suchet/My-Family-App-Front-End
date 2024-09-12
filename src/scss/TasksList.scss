@@ -1,0 +1,32 @@
+.task_container {
+  background-color: rgb(82, 167, 132);
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding-top: 30px;
+
+  .title {
+    display: flex;
+    justify-content: space-between; /* Espace les enfants (h2 et Link) de manière égale */
+    align-items: center; /* Centre verticalement les enfants */
+    width: 100%; /* Assure que .title prend toute la largeur disponible */
+    max-width: 1200px; /* Limite la largeur de l'élément si nécessaire */
+    padding: 0 20px; /* Ajoute un padding horizontal pour respirer */
+    margin-bottom: 20px; /* Espace sous la section titre */
+    h2 {
+      margin: 0;
+    }
+  }
+  .cardTitle {
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    h2 {
+      margin: 0;
+    }
+  }
+}
+.task_container h2 {
+  margin-bottom: 20px;
+}

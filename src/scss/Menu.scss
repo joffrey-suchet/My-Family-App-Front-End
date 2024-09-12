@@ -1,0 +1,12 @@
+.menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  border-top: solid rgb(54, 54, 54) 2px;
+  background-color: rgb(240, 224, 195);
+  height: 55px;
+  z-index: 1;
+}

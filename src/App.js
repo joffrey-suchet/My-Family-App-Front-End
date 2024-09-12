@@ -1,24 +1,50 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+
+import "./scss/App.scss";
+
+import Mymenu from "./components/Menu";
+import Signup from "./components/Signup";
+import UserList from "./components/UserList";
+import Settings from "./components/Settings";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Home from "./components/Home";
+
+import Cookies from "js-cookie";
+import Login from "./components/Login";
+import TasksList from "./components/TasksList";
+import CreateUpdateTask from "./components/CreateUpdateTask";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+  const user = Cookies.get("user");
+
+  return !user ? (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Login />} />
+      </Routes>
+    </Router>
+  ) : (
+    <Router>
+      <Mymenu />
+      <div className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/user/:id" element={<Signup option="edit" />} />
+          <Route path="/user/signup" element={<Signup option="create" />} />
+          <Route path="/taskslist" element={<TasksList />} />
+          <Route
+            path="/task/create"
+            element={<CreateUpdateTask option="create" />}
+          />
+          <Route
+            path="/task/edit/:id"
+            element={<CreateUpdateTask option="edit" />}
+          />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 

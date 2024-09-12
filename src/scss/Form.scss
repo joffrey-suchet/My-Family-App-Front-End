@@ -1,0 +1,24 @@
+.formContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 50px;
+  height: 100vh;
+  width: 100vw;
+}
+.form {
+  width: 70vw;
+  margin-top: 20px;
+}
+.formContainer.signup {
+  background-color: rgb(250, 132, 132);
+}
+.formContainer.userUpdate {
+  background-color: rgb(92, 176, 195);
+}
+.formContainer.createTask {
+  background-color: cornflowerblue;
+}
+.formContainer.taskUpdate {
+  background-color: rgb(152, 98, 189);
+}
