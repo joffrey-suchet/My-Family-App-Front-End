@@ -44,10 +44,9 @@ const Signup = ({ option }) => {
     if (option === "edit") getUser();
     setIsLoading(false);
   }, [option, getUser]);
-
   const onFinish = async (body) => {
     body.squad = userConnected.squad;
-    body.avatar = fileList;
+    body.avatar = fileList.length ? fileList : user?.avatar;
     const formData = new FormData();
     Object.keys(body).forEach((key) => {
       formData.append(key, body[key]);
@@ -74,6 +73,14 @@ const Signup = ({ option }) => {
       navigate("/users");
     } catch (error) {
       message.error(error.response.data.message);
+    }
+  };
+
+  const userAvatar = () => {
+    if (user.avatar) {
+      return <Avatar size={100} src={user.avatar} />;
+    } else {
+      return <p>Cliquer</p>;
     }
   };
 
@@ -104,11 +111,7 @@ const Signup = ({ option }) => {
         <Form.Item label="Avatar">
           <ImgCrop rotate>
             <Upload {...draggerProps} className="avatar">
-              {base64 ? (
-                <Avatar size={100} src={base64} />
-              ) : (
-                <p>Glissez ou cliquez</p>
-              )}
+              {base64 ? <Avatar size={100} src={base64} /> : userAvatar()}
             </Upload>
           </ImgCrop>
         </Form.Item>
