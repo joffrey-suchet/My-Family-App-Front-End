@@ -5,8 +5,14 @@
   width: 100vw;
   display: flex;
   justify-content: space-around;
+  align-items: center;
   border-top: solid rgb(54, 54, 54) 2px;
   background-color: rgb(240, 224, 195);
-  height: 55px;
+  height: 110px;
   z-index: 1;
+  .logo {
+    height: 150px;
+    position: fixed;
+    bottom: -15px;
+  }
 }
