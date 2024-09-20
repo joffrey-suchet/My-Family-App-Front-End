@@ -4,9 +4,15 @@
   width: 100vw;
   padding-top: 30px;
   justify-content: space-around;
+  padding-bottom: 140px;
   .header {
     margin: 30px;
     display: flex;
     justify-content: center;
+  }
+
+  .tabs {
+    background-color: rgb(164, 164, 204);
+    width: 100vw;
   }
 }
