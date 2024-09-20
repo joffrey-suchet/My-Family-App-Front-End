@@ -77,7 +77,7 @@ const Signup = ({ option }) => {
   };
 
   const userAvatar = () => {
-    if (user.avatar) {
+    if (user && user.avatar) {
       return <Avatar size={100} src={user.avatar} />;
     } else {
       return <p>Cliquer</p>;
