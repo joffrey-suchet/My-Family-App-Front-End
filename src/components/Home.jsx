@@ -45,7 +45,7 @@ const Home = () => {
   const getUserTasks = useCallback(async (id) => {
     try {
       const response = await axios.get(
-        `http://localhost:3006/userDailyTasks/${id}`
+        `http://localhost:3006/userWeeklyTasks/${id}`
       );
       console.log(response.data);
 
