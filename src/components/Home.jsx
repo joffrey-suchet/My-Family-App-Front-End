@@ -1,13 +1,17 @@
-import { Button, Card, List, Tabs } from "antd";
+import { Avatar, Button, Card, Col, Descriptions, List, Row, Tabs } from "antd";
 import Cookies from "js-cookie";
 import { message } from "antd";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
+import { CloseOutlined } from "@ant-design/icons";
+import { frequency } from "../utils/frequency";
 
 const Home = () => {
   const userConnected = JSON.parse(Cookies.get("user"));
   const isAdmins = userConnected.role === "admins";
-  const [data, setData] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [userTasks, setUserTasks] = useState();
+  const [stat, setStat] = useState("0");
 
   const onClick = async () => {
     try {
@@ -24,43 +28,87 @@ const Home = () => {
     }
   };
 
-  const getData = useCallback(async () => {
+  const getUsers = useCallback(async () => {
     try {
       const response = await axios.get(
         `http://localhost:3006/users/${userConnected.squad}`
       );
       console.log(response.data);
 
-      setData(response.data);
+      setUsers(response.data);
     } catch (error) {
       console.log(error);
       message.error(error.message.data);
     }
   }, [userConnected.squad]);
 
+  const getUserTasks = useCallback(async (id) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:3006/userDailyTasks/${id}`
+      );
+      console.log(response.data);
+
+      setUserTasks(response.data);
+    } catch (error) {
+      console.log(error);
+      message.error(error.message.data);
+    }
+  }, []);
+
   useEffect(() => {
-    getData();
-  }, [getData]);
+    isAdmins && getUsers();
+  }, [isAdmins, getUsers]);
 
-  const daysOfWeek = [
-    { value: "monday", label: "Lundi" },
-    { value: "tuesday", label: "Mardi" },
-    { value: "wednesday", label: "Mercredi" },
-    { value: "thursday", label: "Jeudi" },
-    { value: "friday", label: "Vendredi" },
-    { value: "saturday", label: "Samedi" },
-    { value: "sunday", label: "Dimanche" },
-  ];
+  const displayUserTasks = () => {
+    return (
+      <Row
+        gutter={[12, 20]}
+        style={{
+          padding: "0 15px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {userTasks.weeklyTasks.map((day, key) => (
+          <Col span={24} key={key}>
+            <Card title={frequency[day.day]}>
+              <List
+                dataSource={day.tasks}
+                renderItem={(item) => (
+                  <List.Item key={item._id}>
+                    <List.Item.Meta
+                      avatar={
+                        item.avatar && <Avatar src={item.avatar} size={50} />
+                      }
+                      title={<h2>{item.name}</h2>}
+                      description={
+                        <Descriptions>
+                          <Descriptions.Item label="point">
+                            {item.value}
+                          </Descriptions.Item>
+                        </Descriptions>
+                      }
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    );
+  };
 
-  const displayUserTasks = (userTasks) =>
-    daysOfWeek.map((day) => (
-      <Card key={day.value} title={day.label}>
-        <List
-          dataSource={userTasks[day.value].reference}
-          renderItem={(item) => <List.Item>{item} </List.Item>}
-        />
-      </Card>
-    ));
+  const onChange = (id) => {
+    getUserTasks(id);
+
+    setStat(id);
+  };
+
+  const removeTabs = () => {
+    setStat("0");
+  };
 
   return (
     <div className="home_container">
@@ -73,11 +121,24 @@ const Home = () => {
       {isAdmins ? (
         <Tabs
           centered
-          defaultActiveKey="1"
-          items={data.map((user, key) => ({
-            key: key,
+          tabBarExtraContent={
+            stat === "0" ? (
+              <></>
+            ) : (
+              <Button>
+                <CloseOutlined
+                  onClick={removeTabs}
+                  style={{ color: "red", size: "20px" }}
+                />
+              </Button>
+            )
+          }
+          activeKey={stat}
+          onChange={onChange}
+          items={users.map((user) => ({
+            key: user._id,
             label: user.name,
-            children: displayUserTasks(user.weeklyTasks),
+            children: userTasks && displayUserTasks(),
           }))}
         />
       ) : (
