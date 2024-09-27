@@ -72,7 +72,7 @@ const Home = () => {
       >
         {userTasks.weeklyTasks.map((day, key) => (
           <Col span={24} key={key}>
-            <Card title={frequency[day.day]}>
+            <Card title={frequency[day.day]} bordered={false} className="card">
               <List
                 dataSource={day.tasks}
                 renderItem={(item) => (
