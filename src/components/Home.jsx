@@ -1,13 +1,24 @@
-import { Avatar, Button, Card, Col, Descriptions, List, Row, Tabs } from "antd";
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Descriptions,
+  List,
+  Popconfirm,
+  Row,
+  Tabs,
+} from "antd";
 import Cookies from "js-cookie";
-import { message } from "antd";
+import { message, Checkbox } from "antd";
 import axios from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { CloseOutlined } from "@ant-design/icons";
 import { frequency } from "../utils/frequency";
-
+import { WarningOutlined } from "@ant-design/icons";
 const Home = () => {
   const userConnected = JSON.parse(Cookies.get("user"));
+
   const isAdmins = userConnected.role === "admins";
   const [users, setUsers] = useState([]);
   const [userTasks, setUserTasks] = useState();
@@ -33,7 +44,6 @@ const Home = () => {
       const response = await axios.get(
         `http://localhost:3006/users/${userConnected.squad}`
       );
-      console.log(response.data);
 
       setUsers(response.data);
     } catch (error) {
@@ -47,8 +57,6 @@ const Home = () => {
       const response = await axios.get(
         `http://localhost:3006/userWeeklyTasks/${id}`
       );
-      console.log(response.data);
-
       setUserTasks(response.data);
     } catch (error) {
       console.log(error);
@@ -58,7 +66,22 @@ const Home = () => {
 
   useEffect(() => {
     isAdmins && getUsers();
-  }, [isAdmins, getUsers]);
+    getUserTasks(userConnected.id);
+  }, [isAdmins, getUsers, getUserTasks, userConnected.id]);
+
+  const onCheckboxhange = async (day, task, keychanged) => {
+    console.log(day);
+    console.log(task);
+    const body = task;
+    body[keychanged] = true;
+    console.log(body);
+
+    await axios.post(
+      `http://localhost:3006/user/taskCompleted/${userConnected.id}/${task.task._id}`,
+      body
+    );
+    window.location.reload();
+  };
 
   const displayUserTasks = () => {
     return (
@@ -72,16 +95,38 @@ const Home = () => {
       >
         {userTasks.weeklyTasks.map((day, key) => (
           <Col span={24} key={key}>
-            <Card title={frequency[day.day]} bordered={false} className="card">
+            <Card
+              title={
+                <div
+                  style={{
+                    fontWeight: "bold",
+                    fontSize: "16px",
+                    color: "darkblue",
+                    textAlign: "center",
+                  }}
+                >
+                  {frequency[day.day]}
+                </div>
+              }
+              headStyle={{
+                border: "none",
+                margin: "-15px",
+                height: "50px",
+              }}
+              className="card"
+            >
               <List
+                style={{ margin: "-20px" }}
                 dataSource={day.tasks}
                 renderItem={(item) => (
-                  <List.Item key={item._id}>
+                  <List.Item key={item._id} style={{ paddingBottom: "0px" }}>
                     <List.Item.Meta
                       avatar={
-                        item.avatar && <Avatar src={item.avatar} size={50} />
+                        item.task.avatar && (
+                          <Avatar src={item.task.avatar} size={30} />
+                        )
                       }
-                      title={<h2>{item.name}</h2>}
+                      title={item.task.name}
                       description={
                         <Descriptions>
                           <Descriptions.Item label="point">
@@ -90,6 +135,34 @@ const Home = () => {
                         </Descriptions>
                       }
                     />
+                    <div>
+                      <h3>Valider</h3>
+                      <Popconfirm
+                        title="Confirmer que la tâche est effectué?"
+                        okText="Confirmer"
+                        okButtonProps={{ type: "danger" }}
+                        cancelText="Annuler"
+                        onConfirm={() =>
+                          onCheckboxhange(day, item, "completed")
+                        }
+                        icon={<WarningOutlined />}
+                      >
+                        <Checkbox
+                          defaultChecked={item.completed}
+                          style={{ transform: "scale(1.5)", margin: "10px" }}
+                          disabled={
+                            userConnected.id !== userTasks._id || item.completed
+                          }
+                        />
+                      </Popconfirm>
+                      <br />
+                      <Checkbox
+                        style={{ transform: "scale(1.5)", margin: "10px" }}
+                        disabled={
+                          userConnected.id === userTasks._id ? true : false
+                        }
+                      />
+                    </div>
                   </List.Item>
                 )}
               />
@@ -113,11 +186,14 @@ const Home = () => {
   return (
     <div className="home_container">
       <div className="header">
-        <h2>Home</h2>
+        <h2>{userConnected.name}</h2>
       </div>
-      <Button type="primary" size="small" onClick={onClick}>
-        Répartir les tâches
-      </Button>
+      {isAdmins && (
+        <Button type="primary" size="small" onClick={onClick}>
+          Répartir les tâches
+        </Button>
+      )}
+
       {isAdmins ? (
         <Tabs
           centered
@@ -142,7 +218,7 @@ const Home = () => {
           }))}
         />
       ) : (
-        <p>En construction</p>
+        userTasks && displayUserTasks()
       )}
     </div>
   );
